@@ -1,0 +1,76 @@
+<div *ngIf="books.length > 0; else noBooks">
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="mb-3">Recommender System</h2>
+      <div class="d-flex align-items-center">
+        <div>
+          <label for="user" class="form-label me-2">User:</label>
+          <select id="user" class="form-select form-select-sm me-2" (change)="changeUser($event)">
+            <option *ngFor="let option of userOptions" [value]="option.id">{{ option.name }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="sortCriteria" class="form-label me-2">Recommendation System:</label>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <select id="sortCriteria" class="form-select form-select-sm me-2" (change)="changeSortCriteria($event)">
+              <option *ngFor="let option of sortOptions" [value]="option"
+                      [selected]="option === sortCriteria">{{ option }}
+              </option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm" (click)="toggleSortOrder()">
+              <i class="bi" [ngClass]="{'bi-arrow-up': sortOrder === 'asc', 'bi-arrow-down': sortOrder === 'desc'}"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="table table-striped table-hover">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Genres</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let book of getDisplayedBooks()"
+          [ngClass]="{'table-success': book.userRating != null}"
+          (click)="openBookDetails(book)"
+          data-bs-toggle="modal"
+          data-bs-target="#confirmDialog"
+          aria-label="View details of {{ book.title }}">
+        <td>{{ books.indexOf(book) + 1 }}</td>
+        <td>{{ book.title }}</td>
+        <td>{{ book.author }}</td>
+        <td>{{ book.genres.join(', ') }}</td>
+        <td>
+          <div class="rating-container">
+            <div class="stars-container">
+              <div class="stars" *ngFor="let star of [1, 2, 3, 4, 5]">
+                <i
+                  class="bi"
+                  [ngClass]="{'bi-star': book.userRating < star, 'bi-star-fill': book.userRating >= star}"
+                  (click)="rateBook(book, star)"
+                ></i>
+              </div>
+            </div>
+            <div class="small-grey-text">
+              Avg {{ (book.averageRating.toFixed(1)) }} Stars
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #noBooks>
+  <p>Loading books...</p>
+</ng-template>
+
+<!-- Modal for Book Details -->
+<app-bookdetail id="confirmDialog" [selectedBook]="selectedBook"></app-bookdetail>
