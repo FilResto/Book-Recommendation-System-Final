@@ -51,7 +51,7 @@ The backend implements five distinct types of recommendation systems:
 
 ## Demo
 
-Watch a demo of the system in action:
+Watch a demo of the system in working:
 
 ![Demo del progetto](demo-resized-recsys-gif.gif)
 
